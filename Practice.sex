@@ -1,0 +1,117 @@
+-- 개인1
+
+select A.DNAME, AVG(B.DSAL), count(B.DEPTNO)
+FROM DEPART A, PROF B 
+WHERE A.DEPTNO = B.DEPTNO
+group by A.DNAME;
+
+-- 개인2 
+select DNAME, count(B.DEPTNO)
+FROM DEPART A, PROF B
+WHERE A.DEPTNO = B.DEPTNO
+group by DNAME
+HAVING count(B.DEPTNO) <= 3;
+
+-- 조별 1번
+
+select A.PNAME, A.DSAL, B.PNAME, B.DSAL 
+FROM PROF A, PROF B
+where A.PNo = B.MGR
+    and B.DSAL >= A.DSAL;
+
+
+-- 조별 2번
+select PNAME, DNAME, count(S.PNO)
+FROM PROF P, DEPART D, STD S
+WHERE P.DEPTNO = D.DEPTNO AND P.PNO = S.PNO
+group by PNAME,DNAME
+HAVING count(S.PNO) = ( select MAX(count(*))
+                        FROM STD
+                        group by PNO)
+order by DNAME;
+
+
+-- 조별3번
+
+SELECT S.SNAME, D.DNAME, P.PNAME, S.SADDR
+FROM STD S, DEPART D, PROF P
+WHERE S.DEPTNO = D.DEPTNO AND S.PNO = P.PNO 
+AND SADDR = ( SELECT SADDR
+                FROM STD
+                group by SADDR
+                HAVING count(*) = ( SELECT max(mycount)
+                                    FROM (SELECT SADDR, count(*) as mycount
+                                        FROM STD
+                                        GROUP BY SADDR
+                                            )
+                                            ) );
+-- 혹은
+SELECT SNAME, DNAME, PNAME, SADDR
+FROM STD A, DEPART B, PROF C
+WHERE A.DEPTNO = B.DEPTNO AND A.PNO = C.PNO 
+AND SADDR = (select saddr
+            from 
+                (select count(*), saddr
+                from std
+                group by saddr
+                order by count(*) desc)
+            where rownum = 1)
+order by A.SADDR;
+
+
+-- 조별 4번 다시풀어봅시다 *****
+
+select S.SNAME, C.CNAME, E.MERITS, G.GRADE
+FROM STD S, Course C, ENROL E, GRADE G
+where S.SNO = E.SNO AND E.CNO = C.CNO and
+E.MERITS between G.LOW_GRADE and G.HI_GRADE
+and ( )
+
+select E.MERITS, G.GRADE
+FROM ENROL E,GRADE G
+where E.MERITS between G.LOW_GRADE and G.HI_GRADE;
+
+select DISTINCT C.CNAME, E.MERITS
+FROM ENROL E, COURSE C
+WHERE E.CNO = C.CNO and (C.CNO, e.MERITS) in (
+    select CNO , max(MERITS)
+    FROM enrol
+    group by CNO
+)
+order by E.MErits DESC;
+
+
+-- 조별 5번 *** 다시풀어봅시다
+
+select P.PNAME, P.DSAL, D.DNAME
+FROM PROF P, DEPART D
+WHERE P.DEPTNO = D.DEPTNO 
+and dsal > ALL (SELECT DSAL
+                FROM prof p ,depart d
+                WHERE p.deptno = d.deptno
+                AND dname = '컴퓨터과학과'
+                );
+
+SELECT pname, dsal, dname
+FROM prof p, depart d
+WHERE p.deptno = d.deptno
+AND dsal > ALL (SELECT dsal FROM prof p, depart d WHERE p.deptno = d.deptno AND dname = '컴퓨터과학과')
+AND dname <> '컴퓨터과학과';
+select PNAME, DSAL
+from PROF;
+
+
+
+
+
+
+— 조별 6번
+
+SELECT B.dname 학과, A.pname 교수, A.dsal 지도비
+from prof A, depart B, (select avg(dsal) avg, deptno
+                        from prof
+                        group by deptno) VT
+where a.deptno = B.deptno
+AND a.deptno = VT.deptno
+AND A.dsal > vt.avg
+ORDER BY B.dname;
