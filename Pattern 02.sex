@@ -1,0 +1,9 @@
+-- 1. 강의실이 5층인 과목의 과목명, 담당교수명, 강의실을 검색하시오.
+
+SELECT C.CNAME AS 과목명, P.PNAME AS 교수, L.ROOM AS 강의실
+FROM COURSE C, PROF P, LECTURE L
+WHERE C.CNO = L.CNO
+AND L.PNO = P.PNO
+AND SUBSTR(L.ROOM, 2, 1) = 5;
+
+-- 2. 학생들이 3명 이상인 지역에 거주하고 지도교수 
