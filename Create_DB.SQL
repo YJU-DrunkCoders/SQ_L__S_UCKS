@@ -1,0 +1,356 @@
+/* 테이블 삭제 */
+DROP TABLE enrol;
+DROP TABLE lecture;
+DROP TABLE std;
+DROP TABLE prof;
+DROP TABLE course;
+DROP TABLE depart;
+DROP TABLE grade;
+
+/* 테이블 생성 */
+
+/* 학과 테이블 생성 */
+CREATE TABLE depart
+(
+	deptno		NUMBER(4),
+	dname		VARCHAR2(30) NOT NULL,
+	chief		NUMBER(5),
+	dtel		NUMBER(5),
+	loc		VARCHAR2(6),
+CONSTRAINT depart_deptno_pk PRIMARY KEY(deptno)
+);
+
+
+/* 학과 테이블 데이터 입력 */
+INSERT INTO depart
+VALUES (1001, '컴퓨터공학과', 10001, 3333, 'T101');
+INSERT INTO depart
+VALUES (1002, '컴퓨터과학과', 10002, 3334, 'T201');
+INSERT INTO depart
+VALUES (1003, '정보처리학과', 10003, 3335, 'T301');
+INSERT INTO depart
+VALUES (1004, '전자정보공학과', 10004, 3336, 'T401');
+INSERT INTO depart
+VALUES (1005, '전기공학과', 10005, 3337, 'T501');
+INSERT INTO depart
+VALUES (1006, '고분자공학과', 10006, 3338, 'T601');
+INSERT INTO depart
+VALUES (1007, '물리학과', 10006, 3339, 'T701');
+
+
+/* 강좌 테이블 생성 */
+CREATE TABLE course
+(
+	cno		NUMBER(6),
+	cname		VARCHAR2(12) NOT NULL,
+	times		NUMBER(3),
+	point		NUMBER(3),
+CONSTRAINT course_cno_pk PRIMARY KEY(cno),
+CONSTRAINT course_times_ck CHECK (times BETWEEN 1 AND 5)
+);
+
+
+/* 강좌 테이블 데이터 입력 */
+INSERT INTO course
+VALUES (10001, 'C_언어', 3, 3);
+INSERT INTO course
+VALUES (10002, 'DB_언어', 3, 3);
+INSERT INTO course
+VALUES (10003, 'JDBC', 3, 3);
+INSERT INTO course
+VALUES (10004, 'MFC', 3, 3);
+INSERT INTO course
+VALUES (10005, '알고리즘', 3, 3);
+INSERT INTO course
+VALUES (10006, '네트워크', 3, 3);
+INSERT INTO course
+VALUES (10007, '자료구조', 3, 3);
+INSERT INTO course
+VALUES (10008, '운영체제', 2, 2);
+
+
+/* 교수 테이블 생성 */
+CREATE TABLE prof
+(
+	pno		NUMBER(5),
+	pname		VARCHAR2(16) NOT NULL,
+	duty		VARCHAR2(16),
+	deptno		NUMBER(4),
+        mgr          	NUMBER(5),
+        dsal		Number(6),
+	hire_date	DATE,
+CONSTRAINT prof_pno_pk PRIMARY KEY(pno),
+CONSTRAINT prof_mgr_fk FOREIGN KEY(mgr)
+	REFERENCES prof(pno),
+CONSTRAINT prof_deptno_fk FOREIGN KEY(deptno)
+	REFERENCES depart(deptno)
+);
+
+
+/* 교수 테이블 데이터 입력 */
+INSERT INTO prof
+VALUES (10001, '홍성현',   '교수', 1001,  null, 300, TO_DATE('890901','RRMMDD'));
+INSERT INTO prof
+VALUES (10002, '이순신',   '교수', 1002, 10001, 250, TO_DATE('890901','RRMMDD'));
+INSERT INTO prof
+VALUES (10003, '이용신',   '교수', 1003, 10001, 250, TO_DATE('930301','RRMMDD'));
+INSERT INTO prof
+VALUES (10004, '고재우',   '교수', 1004, 10001, 250, TO_DATE('930901','RRMMDD'));
+INSERT INTO prof
+VALUES (10005, '민병관',   '교수', 1005, 10001, 250, TO_DATE('940901','RRMMDD'));
+INSERT INTO prof
+VALUES (10006, '문병인', '부교수', 1007, 10001, 200, TO_DATE('950301','RRMMDD'));
+INSERT INTO prof
+VALUES (10007, '오태수',   '교수', 1001, 10001, 180, TO_DATE('950301','RRMMDD'));
+INSERT INTO prof
+VALUES (10008, '김기수',   '교수', 1002, 10002, 180, TO_DATE('950901','RRMMDD'));
+INSERT INTO prof
+VALUES (10009, '김현균',   '교수', 1003, 10003, 230, TO_DATE('960301','RRMMDD'));
+INSERT INTO prof
+VALUES (10010, '박재우', '조교수', 1004, 10004, 150, TO_DATE('970301','RRMMDD'));
+INSERT INTO prof
+VALUES (10011, '손성민', '조교수', 1005, 10005, 170, TO_DATE('970301','RRMMDD'));
+INSERT INTO prof
+VALUES (10012, '최철환', '조교수', 1007, 10006, 230, TO_DATE('990301','RRMMDD'));
+INSERT INTO prof
+VALUES (10013, '장민주', '조교수', 1001, 10001, 280, TO_DATE('990301','RRMMDD'));
+INSERT INTO prof
+VALUES (10014, '홍금인', '부교수', 1002, 10002, 200, TO_DATE('010301','RRMMDD'));
+INSERT INTO prof
+VALUES (10015, '김병철', '부교수', 1003, 10003, 150, TO_DATE('010301','RRMMDD'));
+INSERT INTO prof
+VALUES (10016, '김진곤', '조교수', 1004, 10004, null, TO_DATE('040301','RRMMDD'));
+INSERT INTO prof
+VALUES (10017, '장철수',   '교수', 1005, 10005,  90, TO_DATE('040301','RRMMDD'));
+INSERT INTO prof
+VALUES (10018, '최현판', '조교수', 1007, 10006, null, TO_DATE('050301','RRMMDD'));
+INSERT INTO prof
+VALUES (10019, '서철구',   '교수', 1001, 10001, 200, TO_DATE('050301','RRMMDD'));
+INSERT INTO prof
+VALUES (10020, '안태순', '부교수', null, 10002, 190, TO_DATE('050301','RRMMDD'));
+
+
+/* 학생 테이블 생성 */
+CREATE TABLE std
+(
+	sno		NUMBER(8),
+	sname		VARCHAR2(16) NOT NULL,
+	deptno		NUMBER(4),
+	year		NUMBER(2),
+	stel		NUMBER(12),
+	saddr		VARCHAR2(16),
+	pno		NUMBER(5),
+CONSTRAINT std_sno_pk PRIMARY KEY(sno),
+CONSTRAINT std_deptno_fk FOREIGN KEY(deptno)
+	REFERENCES depart(deptno),
+CONSTRAINT std_pno_fk FOREIGN KEY(pno)
+	REFERENCES prof(pno)
+);
+
+
+/* 학생 테이블 데이터 입력 */
+INSERT INTO std
+VALUES (20040001, '오형성', 1001, 2, 9995555, '대구', 10001);
+INSERT INTO std
+VALUES (20040002, '김석환', 1002, 2, 3331111, '안동', 10002);
+INSERT INTO std
+VALUES (20030001, '강태효', 1003, 2, 2221122, '경산', 10003);
+INSERT INTO std
+VALUES (20030002, '이숙자', 1004, 3, 7778888, '서울', 10004);
+INSERT INTO std
+VALUES (20030003, '이태련', 1005, 3, 8886666, '서울', 10005);
+INSERT INTO std
+VALUES (20020001, '박기구', 1007, 4, 5551234, '대구', 10006);
+INSERT INTO std
+VALUES (20020002, '김성종', 1004, 3, 1230987, '대구', 10004);
+INSERT INTO std
+VALUES (20030004, '김기태', 1001, 2, 9401234, '대구', 10007);
+INSERT INTO std
+VALUES (20030005, '한서주', 1002, 2, 1234444, '부산', 10002);
+INSERT INTO std
+VALUES (20010001, '서현욱', 1003, 4, 9994567, '울산', 10009);
+INSERT INTO std
+VALUES (20020003, '성기수', 1004, 4, 8766789, '서울', 10010);
+INSERT INTO std
+VALUES (20040003, '이소라', 1005, 2, 2340090, '대구', 10011);
+INSERT INTO std
+VALUES (20020004, '박찬후', 1007, 4, 4568765, '경산', 10006);
+INSERT INTO std
+VALUES (20040004, '신기석', 1001, 2, 8909877, '대구', 10013);
+INSERT INTO std
+VALUES (20030006, '고명구', 1002, 3, 7770000, '서울', 10014);
+INSERT INTO std
+VALUES (20040005, '최현수', 1003, 2, 2220987, '대구', 10015);
+INSERT INTO std
+VALUES (20030007, '박고라', 1004, 3, 3458765, '구미', 10010);
+INSERT INTO std
+VALUES (20010002, '송재인', 1005, 4, 5887788, '서울', 10017);
+INSERT INTO std
+VALUES (20020005, '박산민', 1005, 4, 7651111, '서울', 10011);
+INSERT INTO std
+VALUES (20040006, '이재수', 1007, 2, 6665656, '대구', 10018);
+INSERT INTO std
+VALUES (20020006, '황미라', 1001, 4, 5554646, '대구', 10001);
+INSERT INTO std
+VALUES (20030008, '박현숙', 1002, 3, 7871919, '경산', 10020);
+INSERT INTO std
+VALUES (20030009, '오달중', 1003, 2, 4568989, '부산', 10003);
+
+
+/* 강의 테이블 생성 */
+CREATE TABLE lecture
+(
+	cno		NUMBER(6),
+	pno		NUMBER(5),
+	day		VARCHAR2(4),
+	startwk		NUMBER(2),
+	room		VARCHAR2(6),
+CONSTRAINT lecture_cno_pno_pk PRIMARY KEY(cno, pno),
+CONSTRAINT lecture_startwk_ck CHECK(startwk BETWEEN 1 AND 9),
+CONSTRAINT lecture_cno_fk FOREIGN KEY(cno)
+	REFERENCES course(cno),
+CONSTRAINT lecture_pno_fk FOREIGN KEY(pno)
+	REFERENCES prof(pno)
+);
+
+
+/* 강의 테이블 데이터 입력 */
+INSERT INTO lecture 
+VALUES (10001, 10001, '월', 1, 'C100');
+INSERT INTO lecture 
+VALUES (10001, 10002, '화', 6, 'C101');
+INSERT INTO lecture 
+VALUES (10001, 10003, '월', 1, 'C102');
+INSERT INTO lecture 
+VALUES (10001, 10004, '수', 1, 'C103');
+INSERT INTO lecture 
+VALUES (10002, 10007, '월', 4, 'C201');
+INSERT INTO lecture 
+VALUES (10002, 10008, '화', 1, 'C202');
+INSERT INTO lecture 
+VALUES (10003, 10009, '수', 3, 'C300');
+INSERT INTO lecture 
+VALUES (10003, 10010, '목', 5, 'C301');
+INSERT INTO lecture 
+VALUES (10004, 10013, '월', 6, 'C401');
+INSERT INTO lecture 
+VALUES (10004, 10014, '화', 3, 'C402');
+INSERT INTO lecture 
+VALUES (10004, 10015, '수', 1, 'C403');
+INSERT INTO lecture 
+VALUES (10005, 10016, '목', 2, 'C500');
+INSERT INTO lecture 
+VALUES (10006, 10019, '월', 3, 'C501');
+INSERT INTO lecture 
+VALUES (10008, 10020, '월', 2, 'C502');
+
+
+/* 등록 테이블 생성 */
+CREATE TABLE enrol
+(
+	cno		NUMBER(6),
+	sno		NUMBER(10),
+	merits		NUMBER(4),
+CONSTRAINT enrol_cno_sno_pk PRIMARY KEY(cno, sno),
+CONSTRAINT enrol_cno_fk FOREIGN KEY(cno)
+	REFERENCES course(cno),
+CONSTRAINT enrol_sno_fk FOREIGN KEY(sno)
+	REFERENCES std(sno)
+);
+
+
+/* 등록 테이블 데이터 입력 */
+INSERT INTO enrol
+VALUES (10001, 20030001, 95);
+INSERT INTO enrol
+VALUES (10001, 20030002, 82);
+INSERT INTO enrol
+VALUES (10001, 20030003, 90);
+INSERT INTO enrol
+VALUES (10001, 20020006, 75);
+INSERT INTO enrol
+VALUES (10001, 20020005, 65);
+INSERT INTO enrol
+VALUES (10001, 20010001, 91);
+INSERT INTO enrol
+VALUES (10002, 20020004, 86);
+INSERT INTO enrol
+VALUES (10002, 20040005, 70);
+INSERT INTO enrol
+VALUES (10002, 20040004, 60);
+INSERT INTO enrol
+VALUES (10002, 20020001, 90);
+INSERT INTO enrol
+VALUES (10002, 20020002, 90);
+INSERT INTO enrol
+VALUES (10003, 20040001, 85);
+INSERT INTO enrol
+VALUES (10003, 20040005, 86);
+INSERT INTO enrol
+VALUES (10003, 20040002, 76);
+INSERT INTO enrol
+VALUES (10003, 20010002, 67);
+INSERT INTO enrol
+VALUES (10004, 20040003, 78);
+INSERT INTO enrol
+VALUES (10004, 20030004, 69);
+INSERT INTO enrol
+VALUES (10004, 20020005, 68);
+INSERT INTO enrol
+VALUES (10004, 20010001, 40);
+INSERT INTO enrol
+VALUES (10005, 20040006, 86);
+INSERT INTO enrol
+VALUES (10005, 20030009, 87);
+INSERT INTO enrol
+VALUES (10005, 20030008, 70);
+INSERT INTO enrol
+VALUES (10005, 20040001, 71);
+INSERT INTO enrol
+VALUES (10006, 20040004, 87);
+INSERT INTO enrol
+VALUES (10006, 20040002, 88);
+INSERT INTO enrol
+VALUES (10006, 20040005, 81);
+INSERT INTO enrol
+VALUES (10006, 20030002, 96);
+INSERT INTO enrol
+VALUES (10008, 20030003, 90);
+INSERT INTO enrol
+VALUES (10008, 20030008, 76);
+INSERT INTO enrol
+VALUES (10008, 20040005, 78);
+INSERT INTO enrol
+VALUES (10008, 20020003, 82);
+
+
+/* 학점 테이블 생성 */
+CREATE TABLE grade
+(
+	grade		VARCHAR2(5),
+	low_grade	NUMBER(4),
+	hi_grade	NUMBER(4)
+);
+
+
+/* 학점 테이블 데이터 입력 */
+INSERT INTO grade
+VALUES ('A+', 95, 100);
+INSERT INTO grade
+VALUES ('A0', 90,  94);
+INSERT INTO grade
+VALUES ('B+', 85,  89);
+INSERT INTO grade
+VALUES ('B0', 80,  84);
+INSERT INTO grade
+VALUES ('C+', 75,  79);
+INSERT INTO grade
+VALUES ('C0', 70,  74);
+INSERT INTO grade
+VALUES ('D+', 65,  69);
+INSERT INTO grade
+VALUES ('D0', 60,  64);
+INSERT INTO grade
+VALUES ('F',   0,  59);
+
+COMMIT;
